@@ -168,7 +168,7 @@
         </div>
         
         <button onclick="loginAdmin()" class="w-full bg-[#013068] text-white py-3 rounded-lg font-bold hover:bg-blue-900 shadow-md transition-all flex justify-center items-center gap-2">
-          <i data-lucide="shield-check" class="h-5 w-5 text-[#FFD700]"></i> Masuk sebagai Super Admin
+          <i data-lucide="shield-check" class="h-5 w-5 text-[#FFD700]"></i> Masuk sebagai Admin
         </button>
         
         <div class="relative flex items-center py-2">
@@ -642,7 +642,7 @@
             document.getElementById('login-overlay').classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => document.getElementById('login-overlay').classList.add('hidden'), 300);
             applyRoleUI();
-            window.showMessage("Berhasil login sebagai Super Admin", "success");
+            window.showMessage("Berhasil login sebagai Admin", "success");
             fetchData();
         } else {
             window.showMessage("Username atau Password salah!", "error");
