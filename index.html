@@ -204,7 +204,7 @@
           />
         </div>
         <div class="text-center md:text-left">
-          <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-[#FFD700]">Dashboard Kinerja Pencatatan Arsip ASN Gol IV/c ke Atas</h1>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-[#FFD700]">Kinerja Petugas Pencatatan Arsip ASN Gol IV/c ke Atas</h1>
           <p class="text-xs sm:text-sm text-blue-200 mt-1">Direktorat Arsip Kepegawaian ASN</p>
         </div>
       </div>
@@ -643,7 +643,7 @@
             document.getElementById('login-overlay').classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => document.getElementById('login-overlay').classList.add('hidden'), 300);
             applyRoleUI();
-            window.showMessage("Berhasil login sebagai Super Admin", "success");
+            window.showMessage("Selamat Datang, Admin!", "success");
             fetchData();
         } else {
             window.showMessage("Username atau Password salah!", "error");
@@ -655,7 +655,7 @@
         document.getElementById('login-overlay').classList.add('opacity-0', 'pointer-events-none');
         setTimeout(() => document.getElementById('login-overlay').classList.add('hidden'), 300);
         applyRoleUI();
-        window.showMessage("Masuk sebagai Tamu. Fitur ekspor dinonaktifkan.", "success");
+        window.showMessage("Masuk sebagai Guest/Tamu.", "success");
         fetchData();
     };
 
