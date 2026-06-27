@@ -269,7 +269,7 @@
         </div>
       </div>
 
-      <div class="mt-6 flex flex-col md:flex-row flex-wrap items-start md:items-center justify-between gap-4 border-t border-slate-100 pt-6">
+      <div class="mt-6 flex flex-col lg:flex-row flex-wrap items-start lg:items-center justify-between gap-4 border-t border-slate-100 pt-6">
         <div class="flex flex-wrap items-center gap-4">
           <button id="btn-sync" onclick="fetchData()" class="inline-flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#013068] transition-colors">
             <i data-lucide="refresh-cw" id="sync-icon" class="h-4 w-4 text-slate-500"></i>
@@ -282,7 +282,7 @@
 
           <div class="flex items-center gap-3">
             <div class="bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-              <span class="text-slate-500">Total Pegawai (Aktif):</span>
+              <span class="text-slate-500">Total Pegawai:</span>
               <span class="font-bold text-[#013068] text-base" id="total-rows">0</span>
             </div>
             <div class="bg-[#FFD700]/20 border border-[#FFD700]/50 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
@@ -292,12 +292,15 @@
           </div>
         </div>
         
-        <div class="flex gap-3">
+        <div class="flex gap-2 flex-wrap justify-end">
           <button onclick="exportAllToExcel()" class="export-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#013068] bg-blue-50 hover:bg-blue-100 transition-colors">
             <i data-lucide="file-spreadsheet" class="h-4 w-4"></i> Ekspor (XLS)
           </button>
+          <button onclick="handlePrintRingkas()" class="export-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-emerald-800 bg-emerald-100 hover:bg-emerald-200 shadow-sm transition-colors">
+            <i data-lucide="file-text" class="h-4 w-4"></i> PDF Ringkas
+          </button>
           <button onclick="handlePrintMain()" class="export-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#013068] hover:bg-blue-900 shadow-sm transition-colors">
-            <i data-lucide="file-text" class="h-4 w-4"></i> Cetak (PDF)
+            <i data-lucide="file-text" class="h-4 w-4"></i> Cetak Detail (PDF)
           </button>
         </div>
       </div>
@@ -328,9 +331,8 @@
             <h2 class="text-base font-medium text-slate-700 m-0">Pencatatan Arsip ASN Golongan IV/c ke Atas</h2>
           </div>
         </div>
-        <div class="flex justify-between text-xs font-semibold text-slate-600 mt-4 px-2 border-t border-slate-200 pt-2">
+        <div id="print-meta-container" class="flex justify-between text-xs font-semibold text-slate-600 mt-4 px-2 border-t border-slate-200 pt-2">
           <span id="print-meta-date">Rentang Waktu: -</span>
-          <span id="print-meta-total-nip" class="text-[#013068] font-bold text-sm">Total Akumulasi NIP: -</span>
           <span id="print-meta-timestamp">Waktu Cetak: -</span>
         </div>
       </div>
@@ -372,7 +374,6 @@
           </div>
           <div class="flex justify-between text-xs font-semibold text-slate-600 mt-4 px-2 border-t border-slate-200 pt-2">
             <span id="modal-print-meta-date">Rentang Waktu: -</span>
-            <span id="modal-print-meta-total-nip" class="text-[#013068] font-bold text-sm">Total Akumulasi NIP: -</span>
             <span id="modal-print-meta-timestamp">Waktu Cetak: -</span>
           </div>
         </div>
@@ -482,10 +483,10 @@
     let checklistState = {};
 
     const CHECKLIST_ITEMS = [
-      { id: 'c1', label: 'Surat Usul Pengangkatan Jabatan Fungsional Utama (2 dokumen : Dari BKN dan Instansi)' },
+      { id: 'c1', label: 'Surat Usul Pengangkatan Jabatan Fungsional Utama (2 dok)' },
       { id: 'c2', label: 'Pertimbangan Kepala BKN' },
       { id: 'c3', label: 'Lembar D.2 Usul Pengangkatan' },
-      { id: 'c4', label: 'SK KP terakhir (ttd Presiden)' },
+      { id: 'c4', label: 'SK KP terakhir ttd Presiden' },
       { id: 'c5', label: 'Penetapan Angka Kredit terakhir' },
       { id: 'c6', label: 'SK Jabatan terakhir' },
       { id: 'c7', label: 'DP3/SKP terakhir' }
@@ -642,7 +643,7 @@
             document.getElementById('login-overlay').classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => document.getElementById('login-overlay').classList.add('hidden'), 300);
             applyRoleUI();
-            window.showMessage("Berhasil login sebagai Admin", "success");
+            window.showMessage("Berhasil login sebagai Super Admin", "success");
             fetchData();
         } else {
             window.showMessage("Username atau Password salah!", "error");
@@ -749,7 +750,7 @@
                   <td class="px-4 py-2 text-sm text-center border border-slate-300 align-top">${row.rollopack || '-'}</td>
                   <td class="px-4 py-2 text-sm text-center border border-slate-300 align-top">${row.lemari || '-'}</td>
                   <td class="px-4 py-2 text-sm text-center border border-slate-300 align-top">${row.rak || '-'}</td>
-                  <td class="px-4 py-2 text-sm text-center font-semibold border border-slate-300 align-top">${row.jumlahNIP || '0'}</td>
+                  <td class="px-4 py-2 text-base text-center font-bold text-[#013068] border border-slate-300 align-top">${row.jumlahNIP || '0'}</td>
                   <td class="px-4 py-2 border border-slate-300 align-top" style="white-space: normal; word-wrap: break-word;">${formattedNIP}</td>
                 </tr>
             `;
@@ -771,10 +772,10 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-100">
                   ${tbodyRows}
-                  <tr class="bg-slate-100 font-bold">
-                    <td colspan="4" class="px-4 py-2 text-right border border-slate-300 uppercase text-xs">Akumulasi Total NIP:</td>
-                    <td class="px-4 py-2 text-center text-[#013068] text-base border border-slate-300">${totalNIPPerson}</td>
-                    <td class="px-4 py-2 border border-slate-300"></td>
+                  <tr class="bg-slate-100 font-bold text-base">
+                    <td colspan="4" class="px-4 py-4 text-right border border-slate-300 uppercase text-xs">Akumulasi Total NIP:</td>
+                    <td class="px-4 py-4 text-base text-center font-bold text-[#013068] border border-slate-300">${totalNIPPerson}</td>
+                    <td class="px-4 py-4 border border-slate-300"></td>
                   </tr>
                 </tbody>
               </table>
@@ -789,15 +790,77 @@
             <h3 class="text-xl font-bold text-[#013068] mb-4 text-center uppercase border-b-2 border-[#013068] pb-2">Halaman Ringkasan</h3>
             <table class="min-w-full divide-y divide-slate-200 border border-slate-300">
               <tbody class="bg-white">
-                <tr class="bg-slate-100 font-bold text-lg">
-                  <td class="px-4 py-6 text-left border border-slate-300 uppercase">Grand Total Akumulasi Seluruh NIP Yang Dikerjakan:</td>
-                  <td class="px-4 py-6 text-center text-[#013068] border border-slate-300 w-1/4">${grandTotalNIP.toLocaleString('id-ID')}</td>
+                <tr class="bg-slate-100 font-bold text-base">
+                  <td class="px-4 py-4 text-right border border-slate-300 uppercase text-xs">Grand Total Akumulasi Seluruh NIP Yang Dikerjakan:</td>
+                  <td class="px-4 py-4 text-base text-center font-bold text-[#013068] border border-slate-300 w-1/4">${grandTotalNIP.toLocaleString('id-ID')}</td>
                 </tr>
               </tbody>
             </table>
           </div>
       `;
 
+      printContainer.innerHTML = htmlContent;
+    };
+
+    const generateRingkasPrintLayout = (rangeText = '', timestampText = '') => {
+      const printContainer = document.getElementById('main-print-layout');
+      if (!printContainer) return;
+      
+      let aggregatedByName = {};
+      filteredData.forEach(row => {
+        const nama = row.namaPetugas || 'Tanpa Nama';
+        if (!aggregatedByName[nama]) aggregatedByName[nama] = [];
+        aggregatedByName[nama].push(row);
+      });
+
+      const sortedNames = Object.keys(aggregatedByName).sort();
+      let tbodyRows = '';
+      let grandTotalNIP = 0;
+
+      sortedNames.forEach((nama, index) => {
+          const rows = aggregatedByName[nama];
+          const totalNIP = calculateTotalNIP(rows);
+          grandTotalNIP += totalNIP;
+
+          tbodyRows += `
+              <tr>
+                <td class="px-4 py-2 text-sm text-center border border-slate-300">${index + 1}</td>
+                <td class="px-4 py-2 text-sm border border-slate-300 font-semibold">${nama}</td>
+                <td class="px-4 py-2 text-sm text-center border border-slate-300">${getUniqueValues(rows, 'rollopack')}</td>
+                <td class="px-4 py-2 text-sm text-center border border-slate-300">${getUniqueValues(rows, 'lemari')}</td>
+                <td class="px-4 py-2 text-sm text-center border border-slate-300">${getUniqueValues(rows, 'rak')}</td>
+                <td class="px-4 py-2 text-base text-center font-bold text-[#013068] border border-slate-300">${totalNIP}</td>
+              </tr>
+          `;
+      });
+
+      let htmlContent = `
+          <div class="mb-8">
+            <h3 class="text-base font-bold text-[#013068] text-center mb-3 border-b-2 border-[#013068] pb-2 uppercase">Rentang Waktu: ${rangeText}</h3>
+            <table class="min-w-full divide-y divide-slate-200 border border-slate-300">
+              <thead class="bg-[#013068]">
+                <tr>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-white border border-slate-300 w-10">No</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-white border border-slate-300">Nama Petugas</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-white border border-slate-300">Rollopack</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-white border border-slate-300">Lemari</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-white border border-slate-300">Rak</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-white border border-slate-300">Total Akumulasi NIP</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-slate-100">
+                ${tbodyRows}
+                <tr class="bg-slate-100 font-bold text-base">
+                  <td colspan="5" class="px-4 py-4 text-right border border-slate-300 uppercase text-xs">Grand Total Keseluruhan NIP:</td>
+                  <td class="px-4 py-4 text-base text-center font-bold text-[#013068] border border-slate-300">${grandTotalNIP.toLocaleString('id-ID')}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="mt-4 text-right text-xs font-semibold text-slate-600">
+              Waktu Cetak: ${timestampText}
+            </div>
+          </div>
+      `;
       printContainer.innerHTML = htmlContent;
     };
 
@@ -1184,12 +1247,9 @@
       generateMainPrintLayout(); 
     };
 
-    window.handlePrintMain = () => {
-      if (currentUserRole === 'guest') { window.showMessage("Akses Ditolak: Tamu tidak diizinkan mengekspor."); return; }
-      const now = new Date();
-      document.getElementById('print-meta-timestamp').innerText = `Waktu Ekspor: ${now.toLocaleString('id-ID')}`;
-      
-      let rangeText = 'Semua Data'; let safeRangeForTitle = 'Semua_Data';
+    const getPrintRangeText = () => {
+      let rangeText = 'Semua Data'; 
+      let safeRangeForTitle = 'Semua_Data';
       if (startDateInput.value || endDateInput.value) {
         rangeText = `${startDateInput.value || 'Data Awal'} s/d ${endDateInput.value || 'Data Akhir'}`;
         safeRangeForTitle = `${startDateInput.value || 'Data Awal'}_${endDateInput.value || 'Data Akhir'}`;
@@ -1197,12 +1257,19 @@
         rangeText = `${sortedDates[0]} s/d ${sortedDates[sortedDates.length - 1]}`;
         safeRangeForTitle = `${sortedDates[0].replace(/\//g, '-')} _ ${sortedDates[sortedDates.length - 1].replace(/\//g, '-')}`;
       }
+      return { rangeText, safeRangeForTitle };
+    };
+
+    window.handlePrintMain = () => {
+      if (currentUserRole === 'guest') { window.showMessage("Akses Ditolak: Tamu tidak diizinkan mengekspor."); return; }
+      
+      const { rangeText, safeRangeForTitle } = getPrintRangeText();
+      const now = new Date();
+      document.getElementById('print-meta-timestamp').innerText = `Waktu Cetak: ${now.toLocaleString('id-ID')}`;
       document.getElementById('print-meta-date').innerText = `Rentang Waktu: ${rangeText}`;
-      const grandTotalNIP = filteredData.reduce((sum, row) => sum + (parseInt(row.jumlahNIP) || 0), 0);
-      document.getElementById('print-meta-total-nip').innerText = `Total Akumulasi NIP: ${grandTotalNIP.toLocaleString('id-ID')}`;
 
       const originalTitle = document.title;
-      document.title = `Laporan Kinerja Pencatatan Arsip IVc ke Atas_${safeRangeForTitle}`;
+      document.title = `Laporan Detail Kinerja Pencatatan Arsip IVc ke Atas_${safeRangeForTitle}`;
 
       document.getElementById('tables-wrapper').classList.add('no-print');
       document.getElementById('pagination-top').classList.add('no-print');
@@ -1218,13 +1285,48 @@
       document.title = originalTitle;
     };
 
+    window.handlePrintRingkas = () => {
+      if (currentUserRole === 'guest') { window.showMessage("Akses Ditolak: Tamu tidak diizinkan mengekspor."); return; }
+      
+      const { rangeText, safeRangeForTitle } = getPrintRangeText();
+      const now = new Date();
+      const timestampText = now.toLocaleString('id-ID');
+
+      // Susun Layout Khusus Cetak Ringkas Terlebih Dahulu
+      generateRingkasPrintLayout(rangeText, timestampText);
+
+      const originalTitle = document.title;
+      document.title = `Laporan Ringkas Kinerja Pencatatan Arsip_${safeRangeForTitle}`;
+
+      // Sembunyikan Meta Global (Rentang & Timestamp) dari Header Utama untuk format Ringkas
+      const metaContainer = document.getElementById('print-meta-container');
+      if(metaContainer) metaContainer.classList.add('hidden');
+
+      document.getElementById('tables-wrapper').classList.add('no-print');
+      document.getElementById('pagination-top').classList.add('no-print');
+      document.getElementById('pagination-bottom').classList.add('no-print');
+      document.getElementById('main-print-layout').classList.remove('hidden');
+      
+      window.print();
+
+      document.getElementById('tables-wrapper').classList.remove('no-print');
+      document.getElementById('pagination-top').classList.remove('no-print');
+      document.getElementById('pagination-bottom').classList.remove('no-print');
+      document.getElementById('main-print-layout').classList.add('hidden');
+      document.title = originalTitle;
+
+      // Munculkan kembali Meta Global untuk format Detail
+      if(metaContainer) metaContainer.classList.remove('hidden');
+
+      // Kembalikan ke layout render HTML awal (detail) setelah cetak ringkas selesai
+      generateMainPrintLayout(); 
+    };
+
     window.handlePrintModal = () => {
       if (currentUserRole === 'guest') { window.showMessage("Akses Ditolak: Tamu tidak diizinkan mengekspor."); return; }
       const now = new Date();
-      document.getElementById('modal-print-meta-timestamp').innerText = `Waktu Ekspor: ${now.toLocaleString('id-ID')}`;
-      document.getElementById('modal-print-meta-date').innerText = `Tanggal Data: ${selectedDateForModal}`;
-      const totalNipModal = calculateTotalNIP(selectedRowsForModal);
-      document.getElementById('modal-print-meta-total-nip').innerText = `Total Akumulasi NIP: ${totalNipModal.toLocaleString('id-ID')}`;
+      document.getElementById('modal-print-meta-timestamp').innerText = `Waktu Cetak: ${now.toLocaleString('id-ID')}`;
+      document.getElementById('modal-print-meta-date').innerText = `Rentang Waktu: ${selectedDateForModal}`;
 
       const originalTitle = document.title;
       const safeDateForTitle = selectedDateForModal.replace(/\//g, '-');
